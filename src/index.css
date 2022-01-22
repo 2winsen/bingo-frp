@@ -1,0 +1,61 @@
+:root {
+    --table-size: 15rem;
+}
+
+.cards {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    gap: 1rem;
+}
+
+.card {
+    background-color: #FF2754;
+    width: 16rem;
+    height: 19rem;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+}
+
+.card:hover {
+    outline: #06FF00 solid 3px;
+}
+
+.title {
+    color: white;
+    font-size: 2rem;
+    padding: 5px;
+    text-transform: uppercase;
+    letter-spacing: 5px;
+}
+
+table {
+    width: var(--table-size);
+    height: var(--table-size);
+    background-color: white;
+    border-collapse: collapse;
+}
+
+table tr td {
+    border: 1px solid black;
+    height: calc(var(--table-size) / 3);
+    width: calc(var(--table-size) / 3);
+    text-align: center;
+    font-size: 1.7rem;
+}
+
+.free-space {
+    font-size: 1.2rem;
+}
+
+#drawnNumbers {
+    margin: 1rem 0;
+    font-size: 1.2rem;
+}
+
+#drawnNumbers span {
+    margin: 0 0.6rem;
+}
