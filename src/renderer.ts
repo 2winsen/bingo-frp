@@ -1,3 +1,14 @@
+export function renderInitial() {
+    render(0, new Array(9).fill(""));
+    render(1, new Array(9).fill(""));
+    const drawnNumbersElement = document.getElementById("drawnNumbers");
+    if (drawnNumbersElement) {
+        while (drawnNumbersElement.childNodes.length > 1) {
+            drawnNumbersElement.removeChild(drawnNumbersElement.lastChild!);
+        }
+    }
+}
+
 export function render(cardIdx: number, numbers: number[]) {
     const cardElement = document.getElementById(`card${cardIdx}`);
     numbers.forEach((num, idx) => {
@@ -13,23 +24,16 @@ export function render(cardIdx: number, numbers: number[]) {
 
 export function renderDrawnNumbers(drawnNumbers: number) {
     const drawnNumbersElement = document.getElementById("drawnNumbers");
-    const newDrawnBall = document.createElement("span");
+    const newDrawnNumber = document.createElement("span");
     const content = document.createTextNode(`${drawnNumbers}`);
-    newDrawnBall.appendChild(content);
-    drawnNumbersElement?.appendChild(newDrawnBall);
+    newDrawnNumber.appendChild(content);
+    drawnNumbersElement?.appendChild(newDrawnNumber);
 }
 
-export function renderStatus(tick: number) {
+export function renderStatus(tick: number, phase: string) {
     const statusElement = document.getElementById("status");
-    let status = "Choose Card(s)";
-    if (tick > 9) {
-        status = "Numbers Drawing";
-    }
-    if (tick > 99) {
-        status = "Game Ended";
-    }
     if (statusElement) {
-        statusElement.innerHTML = `${status} (${tick})`;
+        statusElement.innerHTML = `${phase} (${tick})`;
     }
 }
 

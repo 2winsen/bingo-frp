@@ -59,3 +59,11 @@ table tr td {
 #drawnNumbers span {
     margin: 0 0.6rem;
 }
+
+#new-game {
+    margin: 1rem 0;
+    width: 10rem;
+    height: 4rem;
+    font-size: 1.2rem;
+    cursor: pointer;
+}

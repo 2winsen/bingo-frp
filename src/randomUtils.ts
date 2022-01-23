@@ -8,7 +8,7 @@ function generateRandomArray(size: number) {
     return Array.from({ length: size }, () => randomInt(1, 20));
 }
 
-export function generateDrawnBalls() {
+export function generateDrawnNumbers() {
     return generateRandomArray(20);
 }
 
