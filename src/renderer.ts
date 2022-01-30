@@ -20,7 +20,7 @@ function renderCardNumber(cardElement: HTMLElement | null, number: number | stri
     }
     const cell = cardElement?.getElementsByClassName(`idx${idx}`)[0] as HTMLElement;
     if (cell) {
-        cell.innerHTML = `${number}`;
+        cell.textContent = `${number}`;
         cell.style.color = (number === DAUBED) ? "#d75aff" : "#000";
     }
 }
@@ -54,7 +54,7 @@ export function renderDrawnNumber(drawnNumber: number, cardsMap: CardsMap | null
 export function renderStatus(tick: number, phase: string) {
     const statusElement = document.getElementById("status");
     if (statusElement) {
-        statusElement.innerHTML = `${phase} (${tick})`;
+        statusElement.textContent = `${phase} (${tick})`;
     }
 }
 

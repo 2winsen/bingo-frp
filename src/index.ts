@@ -1,4 +1,4 @@
-import { combineLatest, fromEvent, last, map, merge, of, scan, startWith, switchMap, take, takeWhile, tap, timer } from "rxjs";
+import { combineLatest, fromEvent, last, map, merge, scan, startWith, switchMap, take, takeWhile, tap, timer } from "rxjs";
 import "./index.css";
 import { generateCardNumbers, generateDrawnNumber } from "./randomUtils";
 import { clear, render, renderDrawnNumber, renderStatus } from "./renderer";
@@ -40,6 +40,7 @@ const cardsSelectStream = () => combineLatest([
         takeWhile(([tick]) => tick > 0),
         tap(([tick]) => renderStatus(tick, "Select cards:")),
         map(([, cardsMap]) => cardsMap),
+        // we only emit last value when stream is completed
         last(),
     );
 
