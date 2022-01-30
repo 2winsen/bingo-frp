@@ -1,6 +1,11 @@
-export function renderInitial() {
-    render(0, new Array(9).fill(""));
-    render(1, new Array(9).fill(""));
+import { Card, CardsMap } from "./types";
+
+const DAUBED = "X"
+
+export function clear() {
+    const emptyNumbers = new Array(9).fill("");
+    render({ id: 0, numbers: emptyNumbers });
+    render({ id: 1, numbers: emptyNumbers });
     const drawnNumbersElement = document.getElementById("drawnNumbers");
     if (drawnNumbersElement) {
         while (drawnNumbersElement.childNodes.length > 1) {
@@ -9,25 +14,41 @@ export function renderInitial() {
     }
 }
 
-export function render(cardIdx: number, numbers: number[]) {
-    const cardElement = document.getElementById(`card${cardIdx}`);
-    numbers.forEach((num, idx) => {
-        if (idx === 4) {
-            return;
-        }
-        const cell = cardElement?.getElementsByClassName(`idx${idx}`)[0];
-        if (cell) {
-            cell.innerHTML = `${num}`;
-        }
-    });
+function renderCardNumber(cardElement: HTMLElement | null, number: number | string, idx: number) {
+    if (idx === 4) {
+        return;
+    }
+    const cell = cardElement?.getElementsByClassName(`idx${idx}`)[0] as HTMLElement;
+    if (cell) {
+        cell.innerHTML = `${number}`;
+        cell.style.color = (number === DAUBED) ? "#d75aff" : "#000";
+    }
 }
 
-export function renderDrawnNumbers(drawnNumbers: number) {
+export function render({ id, numbers }: Card) {
+    const cardElement = document.getElementById(`card${id}`);
+    numbers.forEach((num, idx) => renderCardNumber(cardElement, num, idx));
+}
+
+export function renderDrawnNumber(drawnNumber: number, cardsMap: CardsMap | null) {
     const drawnNumbersElement = document.getElementById("drawnNumbers");
     const newDrawnNumber = document.createElement("span");
-    const content = document.createTextNode(`${drawnNumbers}`);
+    const content = document.createTextNode(`${drawnNumber}`);
     newDrawnNumber.appendChild(content);
     drawnNumbersElement?.appendChild(newDrawnNumber);
+
+    if (!cardsMap) {
+        return;
+    }
+
+    cardsMap.forEach((card, cardIdx) => {
+        const cardElement = document.getElementById(`card${cardIdx}`);
+        card.numbers.forEach((number, idx) => {
+            if (number === drawnNumber) {
+                renderCardNumber(cardElement, DAUBED, idx);
+            }
+        })
+    });
 }
 
 export function renderStatus(tick: number, phase: string) {

@@ -5,7 +5,7 @@ function randomInt(min: number, max: number) {
 }
 
 function generateRandomArray(size: number) {
-    return Array.from({ length: size }, () => randomInt(1, 20));
+    return Array.from({ length: size }, () => randomInt(1, 60));
 }
 
 export function generateDrawnNumbers() {

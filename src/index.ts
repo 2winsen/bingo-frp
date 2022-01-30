@@ -1,44 +1,46 @@
-import { bufferCount, combineLatest, concat, distinct, fromEvent, map, merge, of, startWith, switchMap, take, takeUntil, takeWhile, tap, timer } from "rxjs";
+import { combineLatest, fromEvent, last, map, merge, of, scan, startWith, switchMap, take, takeWhile, tap, timer } from "rxjs";
 import "./index.css";
 import { generateCardNumbers, generateDrawnNumbers } from "./randomUtils";
-import { render, renderDrawnNumbers, renderInitial, renderStatus } from "./renderer";
+import { clear, render, renderDrawnNumber, renderStatus } from "./renderer";
+import { Card, CardsMap } from "./types";
 
 const CARD_SELECTION_TIME = 10;
 const NUMBERS_DRAWING_TIME = 20;
 
-const card0 = document.getElementById("card0") as Element;
-const card1 = document.getElementById("card1") as Element;
-const newGame = document.getElementById("new-game") as Element;
-
-const cardClickStream = (card: Element) => fromEvent<MouseEvent>(card, "click")
+const cardClickStream = (card: HTMLElement) => fromEvent<MouseEvent>(card, "click")
     .pipe(
         map(() => +card.id.slice(-1)),
     );
 
-const cardGenerationStream = merge(
+const card0 = document.getElementById("card0") as HTMLElement;
+const card1 = document.getElementById("card1") as HTMLElement;
+const cardsGenerationStream = merge(
     cardClickStream(card0),
     cardClickStream(card1),
 )
     .pipe(
-        map(cardIdx => ({ cardIdx, numbers: generateCardNumbers() })),
-        tap(({ cardIdx, numbers }) => render(cardIdx, numbers)),
-        startWith("initialCardClick"),
+        map<number, Card>(id => ({ id, numbers: generateCardNumbers() })),
+        tap(card => render(card)),
+        scan((acc, card) => acc.set(card.id, card), new Map<number, Card>()),
+        startWith(null),
     )
 
-const cardSelectStream = combineLatest([
+const cardsSelectStream = combineLatest([
     timer(0, 1000)
         .pipe(
             map(tick => tick + 1),
             map(tick => CARD_SELECTION_TIME - tick),
-            tap((tick) => renderStatus(tick, "Select cards:")),
         ),
-    cardGenerationStream,
+    cardsGenerationStream,
 ])
     .pipe(
-        takeWhile(([tick]) => tick > 0)
+        takeWhile(([tick]) => tick > 0),
+        tap(([tick]) => renderStatus(tick, "Select cards:")),
+        map(([, cardsMap]) => cardsMap),
+        last(),
     )
 
-const numbersDrawingStream = combineLatest([
+const numbersDrawingStream = (cardsMap: CardsMap | null) => combineLatest([
     timer(0, 1000)
         .pipe(
             map(tick => tick + 1),
@@ -50,21 +52,20 @@ const numbersDrawingStream = combineLatest([
     .pipe(
         take(20),
         map(([tick, drawnNumbers]) => drawnNumbers[tick]),
-        tap(renderDrawnNumbers),
+        tap(drawnNumbers => renderDrawnNumber(drawnNumbers, cardsMap)),
     )
 
+const newGame = document.getElementById("new-game") as HTMLElement;
 const newGameStream = fromEvent(newGame, "click")
     .pipe(
         startWith("initialClick"),
-        tap(renderInitial),
+        tap(clear),
     );
 
 const game = newGameStream
     .pipe(
-        switchMap(() => concat(
-            cardSelectStream,
-            numbersDrawingStream,
-        ))
+        switchMap(() => cardsSelectStream),
+        switchMap(cardsMap => numbersDrawingStream(cardsMap)),
     );
 
 game.subscribe();
