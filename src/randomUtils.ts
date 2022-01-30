@@ -1,3 +1,5 @@
+const MAX_RANDOM_NUMBER = 60;
+
 function randomInt(min: number, max: number) {
     return Math.floor(
         Math.random() * (max - min + 1) + min
@@ -5,11 +7,11 @@ function randomInt(min: number, max: number) {
 }
 
 function generateRandomArray(size: number) {
-    return Array.from({ length: size }, () => randomInt(1, 60));
+    return Array.from({ length: size }, () => randomInt(1, MAX_RANDOM_NUMBER));
 }
 
-export function generateDrawnNumbers() {
-    return generateRandomArray(20);
+export function generateDrawnNumber() {
+    return randomInt(1, MAX_RANDOM_NUMBER);
 }
 
 export function generateCardNumbers() {
